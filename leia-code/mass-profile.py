@@ -176,6 +176,8 @@ plt.savefig(dirname+'spectra.png')
 # find the IFTs of the field modes to get their spatial profile
 r_vac, _ = field(0, k, r, N)
 r_res, f_res = field(ck, k, r, N)
+r_res[r>r[np.argmin(r_res)]] = 10*r_res[np.argmin(r_res)] # negative number to fall away in mass calc
+# above 10 is somewhat arbitrary factor to get enclosed mass to fall off at zero-crossing of rho
 
 # # plot field profiles
 # plt.clf()
@@ -189,22 +191,27 @@ r_res, f_res = field(ck, k, r, N)
 
 # # exit()
 
-# # plot energy profiles
-# plt.clf()
-# # plt.loglog(r, r_vac, 'k', label='vacuum')
-# plt.loglog(r, r_res, 'r')
-# # plt.semilogx(r, ri_res, '--', label=r'IFT')
-# plt.ylabel(r'$\rho_\chi(r)/\lambda^2\Phi^4$')
-# plt.xlabel(r'$\sqrt{\lambda}\Phi r$')
-# plt.tight_layout()
-# plt.savefig(dirname+'rhos.png') 
+
+Phi = 6**.25
+H = Phi / np.sqrt(12)
+
+# plot energy profiles
+plt.clf()
+# plt.loglog(r, r_vac, 'k', label='vacuum')
+plt.loglog(r, r_res, 'r')
+# plt.semilogx(r, ri_res, '--', label=r'IFT')
+plt.ylabel(r'$\rho_\chi(r)/\lambda^2\Phi^4$')
+plt.xlabel(r'$\sqrt{\lambda}\Phi r$')
+plt.plot([1/H, 1/H], plt.ylim(), 'k', label=r'Hubble radius with $\Phi/M_\mathrm{{pl}}={}$'.format({round(Phi, 2)}))
+# plt.plot([1.032, 1.032], plt.ylim())
+# plt.legend()
+plt.tight_layout()
+plt.savefig(dirname+'rhos.png') 
 
 
 ### rest of code is finding mass enclosed within r and comparing to black hole mass with radius r
 
 plt.clf()
-Phi = 8**.25
-H = Phi/np.sqrt(12)
 lMpl = -np.log10(Phi) + 7  # assuming lambda=10^-14
 
 # optionally, convert axes to non-natural units
