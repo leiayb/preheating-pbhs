@@ -90,11 +90,16 @@ lam = 1e-14
 g2 = q * lam
 varc = 0
 N = 0
-while varc < cn2 / g2:
-    N += 1  # step BEFORE recalculating varchi
+dN = 1
+digits = 2
+while dN > 10**(-digits-1):
+    while varc < cn2 / g2:
+        N += dN  # step before recalculating new varchi
+        varc = fvar(ck, q, k, N)
+    N -= dN  # undo overshoot from last step
     varc = fvar(ck, q, k, N)
-N -= 1  # undo overshoot from last recalculation
-print('N =', N)
+    dN /= 10  # increase precision
+print('N =',round(N, digits))
 
 
 # ### nnl scan to pick q's
@@ -198,7 +203,7 @@ r_res, f_res = field(ck, k, r, N)
 ### rest of code is finding mass enclosed within r and comparing to black hole mass with radius r
 
 plt.clf()
-Phi = 96**.25
+Phi = 8**.25
 H = Phi/np.sqrt(12)
 lMpl = -np.log10(Phi) + 7  # assuming lambda=10^-14
 
@@ -225,12 +230,12 @@ if gauss:
 # plot Hubble radii
 if cm:
     plt.plot([10**lMpl / nu.Mpl / nu.m * 100/H, 10**lMpl / nu.Mpl / nu.m * 100/H], plt.ylim(),
-             'k', label=r'Hubble radius with $\Phi/M_\mathrm{{pl}}={}$'.format({round(Phi, 2)}))
+             'k', label=r'$R_H$ with $\Phi/M_\mathrm{{pl}}={}$'.format({round(Phi, 2)}))
 else:
-    plt.plot([1/H, 1/H], plt.ylim(), 'k', label=r'$R_H$')
+    plt.plot([1/H, 1/H], plt.ylim(), 'k', label=r'Hubble radius with $\Phi/M_\mathrm{{pl}}={}$'.format({round(Phi, 2)}))
             
 # plot black hole mass vs radius to compare to phi mass:
-plt.loglog(rp, 10**(2*lMpl) * r/2 * massmult, ':b', label=r'$M_\mathrm{BH}$')
+plt.loglog(rp, 10**(2*lMpl) * r/2 * massmult, ':b', label=r'$M_\mathrm{{BH}}$ with $\sqrt{{\lambda}}\Phi/M_{{\rm pl}}=10^{}$'.format({-round(lMpl, 2)}))
 
 if gram:
     plt.ylabel(r'mass [g] with '+string)
