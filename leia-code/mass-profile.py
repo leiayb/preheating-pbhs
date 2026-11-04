@@ -1,13 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from scipy.integrate import solve_ivp
 from scipy import fft
 from scipy.integrate import simpson
 from scipy.integrate import cumulative_trapezoid
-from scipy.integrate import quad
 import natural_units as nu
-from scipy.special import ellipj
 from scipy.special import ellipk
 from scipy.special import ellipe
 from scipy.special import spherical_jn
@@ -44,7 +41,7 @@ def Mt(dr, r):  # deltaM with tophat window window
 def field(ck, k, r, N):  # most important function, IFTing resonance bands
     ok = np.sqrt(meff2(q) + k**2)  # mode frequency omega_k
     vk = np.exp(ck * N) / np.sqrt(ok) / np.sqrt(2)  # mode function v_k
-    fk = (vk - 1 / np.sqrt(ok) / np.sqrt(2))* k**1.5
+    fk = (vk - 1 / np.sqrt(ok) / np.sqrt(2)) * k**1.5
 
     f_j0 = simpson(spherical_jn(0, np.outer(k, r)) * k**2 * fk * np.sqrt(2/np.pi) * k, np.log(k))
 

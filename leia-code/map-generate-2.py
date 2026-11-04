@@ -32,7 +32,7 @@ def find_gamma(A, Q):  # finding mu for one dimensionQ
     t = np.linspace(0, tmax, 1000)
 
     soln = solve_ivp(mathieu, [0, tmax], [1, 0], t_eval=t,
-                     args=(A, Q))
+                     args=(A, Q), rtol=1e-10, atol=1e-12)
     h = soln.y[0][-1]
     g = soln.y[1][-1]
 
@@ -57,19 +57,20 @@ As = np.linspace(0, 10, N)  # put in a range for A=kappa^2 here
 Qs = np.linspace(0, 100, N+1)  # range for q=g^2/lam
 # and then might need to change some variable names below
 
-# ## finding growth rates
-# mus = np.zeros((np.size(Qs), np.size(As)))
+## finding growth rates
+mus = np.zeros((np.size(Qs), np.size(As)))
 
-# sheet = {}
-# sheet.update({'Qs': Qs})
-# sheet.update({'As': As})
+sheet = {}
+sheet.update({'Qs': Qs})
+sheet.update({'As': As})
 
-# for i, q in enumerate(Qs):
-#     for j, A in enumerate(As):
-#         mus[i, j] = find_gamma(A, q)
-# sheet.update({'gs': mus})
+for i, q in enumerate(Qs):
+    print(q)
+    for j, A in enumerate(As):
+        mus[i, j] = find_gamma(A, q)
+sheet.update({'gs': mus})
 
-# save_xls(sheet, 'g2/g2-map.xlsx')
+save_xls(sheet, 'g2/g2-map.xlsx')
 
 
 

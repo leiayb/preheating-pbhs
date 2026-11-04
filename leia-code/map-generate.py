@@ -37,7 +37,8 @@ def find_mu(inp):  # finding mu for one dimensionQ
     t = np.linspace(0, tmax, 1000)
 
     soln = solve_ivp(mathieu, [0, tmax], [1, 0], t_eval=t,
-                     args=(k**2, Q))
+                     args=(k**2, Q), #rtol=1e-6
+                     method='LSODA', rtol=1e-10, atol=1e-12)
     h = soln.y[0][-1]
     g = soln.y[1][-1]
 
@@ -53,7 +54,7 @@ tmax = 4 * ellipk(0.5)
 # print(tmax)
 # exit()
 
-m = 7
+m = 9
 k = np.logspace(-3, 4, 2**m)
 # qs = [4.9e6]
 # qs = [1e2]
