@@ -9,7 +9,6 @@ from scipy.special import ellipk
 from scipy.special import ellipe
 from scipy.special import spherical_jn
 
-
 plt.rcParams["font.family"] = "serif"
 plt.rcParams["mathtext.fontset"] = "dejavuserif"
 plt.rcParams['font.size'] = 27
@@ -54,6 +53,7 @@ def field(ck, k, r, N):  # most important function, IFTing resonance bands
     plt.loglog(k, nk, 'r')
     plt.ylabel(r'$n_k$')
     plt.xlabel(r'$k/\sqrt{\lambda}\Phi$')
+    plt.ylim([1e-13, 1e12])
     plt.tight_layout() 
     plt.savefig(dirname+'nk.png')
 
@@ -61,6 +61,7 @@ def field(ck, k, r, N):  # most important function, IFTing resonance bands
     plt.loglog(k, rhok, 'r')
     plt.ylabel(r'$\rho_{\chi k}/\sqrt{\lambda}\Phi$')
     plt.xlabel(r'$k/\sqrt{\lambda}\Phi$')
+    plt.ylim([1e-9, 1e16])
     plt.tight_layout() 
     plt.savefig(dirname+'rhok.png')
 
@@ -173,18 +174,16 @@ plt.savefig(dirname+'spectra.png')
 # find the IFTs of the field modes to get their spatial profile
 r_vac, _ = field(0, k, r, N)
 r_res, f_res = field(ck, k, r, N)
-r_res[r>r[np.argmin(r_res)]] = 10*r_res[np.argmin(r_res)] # negative number to fall away in mass calc
-# above 10 is somewhat arbitrary factor to get enclosed mass to fall off at zero-crossing of rho
+i_cross = np.squeeze(np.where(np.diff(np.sign(r_res)) != 0))[0]
+r_cross = r[i_cross]
 
-# # plot field profiles
-# plt.clf()
-# # plt.loglog(r, f_vac, 'k', label='vacuum')
-# plt.loglog(r, f_res, 'r', label='resonated')
-# plt.ylabel(r'$\chi(r)/\sqrt{\lambda}\Phi$')
-# plt.xlabel(r'$\sqrt{\lambda}\Phi r$')
-# # plt.legend()
-# plt.tight_layout()
-# plt.savefig(dirname+'fields.png')
+# plot field profiles
+plt.clf()
+plt.loglog(r, np.where(r<r[i_cross], f_res, 0), 'r', label='resonated')
+plt.ylabel(r'$\chi(r)/\sqrt{\lambda}\Phi$')
+plt.xlabel(r'$\sqrt{\lambda}\Phi r$')
+plt.tight_layout()
+plt.savefig(dirname+'fields.png')
 
 # # exit()
 
@@ -194,14 +193,11 @@ H = Phi / np.sqrt(12)
 
 # plot energy profiles
 plt.clf()
-# plt.loglog(r, r_vac, 'k', label='vacuum')
-plt.loglog(r, r_res, 'r')
-# plt.semilogx(r, ri_res, '--', label=r'IFT')
+plt.loglog(r, np.where(r<r[i_cross], r_res, 0), 'r')
 plt.ylabel(r'$\rho_\chi(r)/\lambda^2\Phi^4$')
 plt.xlabel(r'$\sqrt{\lambda}\Phi r$')
 plt.plot([1/H, 1/H], plt.ylim(), 'k', label=r'Hubble radius with $\Phi/M_\mathrm{{pl}}={}$'.format({round(Phi, 2)}))
-# plt.plot([1.032, 1.032], plt.ylim())
-# plt.legend()
+plt.title(r'$r_\mathrm{cross}/R_H=$' + str(round(r_cross * H, 3)))
 plt.tight_layout()
 plt.savefig(dirname+'rhos.png') 
 
@@ -226,7 +222,8 @@ else:
     string = r'$\sqrt{{\lambda}}\Phi/M_\mathrm{{pl}}=10^{}$'.format({-round(lMpl, 2)})
 
 # plot enclosed mass
-plt.loglog(rp, Mt(r_res, r) * massmult, 'r', label=r'$M_\chi^\mathrm{encl}$')
+# plt.loglog(rp, Mt(r_res, r) * massmult, 'r', label=r'$M_\chi^\mathrm{encl}$')
+plt.loglog(rp[:i_cross+1], np.append(Mt(r_res[:i_cross], r[:i_cross]), 0) * massmult, 'r', label=r'$M_\chi^\mathrm{encl}$')
 gauss = False  # if we only want to look at tophat, we can set this to False (turns out not to make huge difference)
 if gauss:
     plt.plot(rp, Mg(r_res, r) * massmult, '--r', alpha=0.7)
