@@ -161,29 +161,29 @@ fk_vac = (meff2(q) + k**2)**-0.25 / k**1.5 / np.sqrt(2)  # field modes for vacuu
 fk_res = fk_vac.copy()
 fk_res = fk_res * np.exp(ck * N)  # field modes that have been resonantly amplified after one period
 
-# plot the field spectra fk
-plt.clf()
-plt.loglog(k, fk_vac, 'k', label='vacuum')
-plt.loglog(k, fk_res, 'r', label='resonated')
-plt.legend()
-plt.ylabel(r'$\lambda\Phi^2|\chi_k|$')
-plt.xlabel(r'$k/\sqrt{\lambda}\Phi$')
-plt.tight_layout() 
-plt.savefig(dirname+'spectra.png')
+# # plot the field spectra fk
+# plt.clf()
+# plt.loglog(k, fk_vac, 'k', label='vacuum')
+# plt.loglog(k, fk_res, 'r', label='resonated')
+# plt.legend()
+# plt.ylabel(r'$\lambda\Phi^2|\chi_k|$')
+# plt.xlabel(r'$k/\sqrt{\lambda}\Phi$')
+# plt.tight_layout() 
+# plt.savefig(dirname+'spectra.png')
 
-# find the IFTs of the field modes to get their spatial profile
-r_vac, _ = field(0, k, r, N)
-r_res, f_res = field(ck, k, r, N)
-i_cross = np.squeeze(np.where(np.diff(np.sign(r_res)) != 0))[0]
-r_cross = r[i_cross]
+# # find the IFTs of the field modes to get their spatial profile
+# r_vac, _ = field(0, k, r, N)
+# r_res, f_res = field(ck, k, r, N)
+# i_cross = np.squeeze(np.where(np.diff(np.sign(r_res)) != 0))[0]
+# r_cross = r[i_cross]
 
-# plot field profiles
-plt.clf()
-plt.loglog(r, np.where(r<r[i_cross], f_res, 0), 'r', label='resonated')
-plt.ylabel(r'$\chi(r)/\sqrt{\lambda}\Phi$')
-plt.xlabel(r'$\sqrt{\lambda}\Phi r$')
-plt.tight_layout()
-plt.savefig(dirname+'fields.png')
+# # plot field profiles
+# plt.clf()
+# plt.loglog(r, np.where(r<r[i_cross], f_res, 0), 'r', label='resonated')
+# plt.ylabel(r'$\chi(r)/\sqrt{\lambda}\Phi$')
+# plt.xlabel(r'$\sqrt{\lambda}\Phi r$')
+# plt.tight_layout()
+# plt.savefig(dirname+'fields.png')
 
 # # exit()
 

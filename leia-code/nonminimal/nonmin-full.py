@@ -237,7 +237,7 @@ if __name__=='__main__':
 
 
     ## plotting enclosed masses
-    plotmass = True
+    plotmass = False
     if plotmass:
         plt.clf()
         mus = np.squeeze(pd.read_excel(filename, sheet_name='mus').values)
