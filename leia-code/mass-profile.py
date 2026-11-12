@@ -171,11 +171,11 @@ fk_res = fk_res * np.exp(ck * N)  # field modes that have been resonantly amplif
 # plt.tight_layout() 
 # plt.savefig(dirname+'spectra.png')
 
-# # find the IFTs of the field modes to get their spatial profile
-# r_vac, _ = field(0, k, r, N)
-# r_res, f_res = field(ck, k, r, N)
-# i_cross = np.squeeze(np.where(np.diff(np.sign(r_res)) != 0))[0]
-# r_cross = r[i_cross]
+# find the IFTs of the field modes to get their spatial profile
+r_vac, _ = field(0, k, r, N)
+r_res, f_res = field(ck, k, r, N)
+i_cross = np.squeeze(np.where(np.diff(np.sign(r_res)) != 0))[0]
+r_cross = r[i_cross]
 
 # # plot field profiles
 # plt.clf()
