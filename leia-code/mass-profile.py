@@ -161,6 +161,12 @@ fk_vac = (meff2(q) + k**2)**-0.25 / k**1.5 / np.sqrt(2)  # field modes for vacuu
 fk_res = fk_vac.copy()
 fk_res = fk_res * np.exp(ck * N)  # field modes that have been resonantly amplified after one period
 
+# find the IFTs of the field modes to get their spatial profile
+r_vac, _ = field(0, k, r, N)
+r_res, f_res = field(ck, k, r, N)
+i_cross = np.squeeze(np.where(np.diff(np.sign(r_res)) != 0))[0]
+r_cross = r[i_cross]
+
 # # plot the field spectra fk
 # plt.clf()
 # plt.loglog(k, fk_vac, 'k', label='vacuum')
@@ -170,12 +176,6 @@ fk_res = fk_res * np.exp(ck * N)  # field modes that have been resonantly amplif
 # plt.xlabel(r'$k/\sqrt{\lambda}\Phi$')
 # plt.tight_layout() 
 # plt.savefig(dirname+'spectra.png')
-
-# find the IFTs of the field modes to get their spatial profile
-r_vac, _ = field(0, k, r, N)
-r_res, f_res = field(ck, k, r, N)
-i_cross = np.squeeze(np.where(np.diff(np.sign(r_res)) != 0))[0]
-r_cross = r[i_cross]
 
 # # plot field profiles
 # plt.clf()
